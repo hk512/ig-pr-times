@@ -129,5 +129,4 @@ dmypy.json
 .pyre/
 
 config/config.json
-src/*
 
