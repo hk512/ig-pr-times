@@ -1,7 +1,8 @@
 # ig-pr-times
 ### 概要
-- 任意のユーザーのPR投稿を監視するツールです。
-- 新規PR投稿をSlackに通知します。
+- 任意のユーザーのPR投稿を監視するツール
+- 新規PR投稿をSlackに通知する
+- 1時間毎に各ユーザーの投稿チェックを行う
 
 ### 使い方
 #### 1. リポジトリをクローン
@@ -51,3 +52,8 @@ example
 - password: Instagramのパスワード
 - webhook_url: SlackのWebhook URL
 - targets: 監視するユーザーのID(複数指定可)
+
+#### 7. 実行
+``` bash
+$ python app.py
+```
