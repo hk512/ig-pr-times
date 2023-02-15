@@ -1,0 +1,10 @@
+{
+  "user_id": "your user id",
+  "password": "your login password",
+  "webhook_url": "your webhook url",
+  "targets": [
+    "target user id",
+    "target user id",
+    "target user id"
+  ]
+}
