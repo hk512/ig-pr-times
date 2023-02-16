@@ -29,7 +29,9 @@ class Watcher(object):
             loader = instaloader.Instaloader()
             loader.login(self.user_id, self.password)
         except Exception as e:
-            logger.error(f"login failed. error={e}")
+            msg = f"login failed. error={e}"
+            self.notificator.notify_error(msg)
+            logger.error(msg)
             return
 
         for target in self.targets:
@@ -38,13 +40,17 @@ class Watcher(object):
             try:
                 profile = instaloader.Profile.from_username(loader.context, target.user_id)
             except Exception as e:
-                logger.error(f"{target.user_id} not found. error={e}")
+                msg = f"{target.user_id} not found. error={e}"
+                self.notificator.notify_error(msg)
+                logger.error(msg)
                 continue
 
             try:
                 posts = profile.get_posts()
             except Exception as e:
-                logger.error(f"{target.user_id}'s post not found. error={e}")
+                msg = f"{target.user_id}'s post not found. error={e}"
+                self.notificator.notify_error(msg)
+                logger.error(msg)
                 continue
 
             for post in posts:
@@ -53,7 +59,7 @@ class Watcher(object):
                     caption = post.caption
                     for keyword in KEYWORDS:
                         if keyword in caption:
-                            self.send_pr_post(post, profile)
+                            self.notificator.notify_pr_post(post, profile)
                             break
 
                 if counter > 3 and post.date.timestamp() < target.last_check_timestamp:
@@ -67,20 +73,6 @@ class Watcher(object):
             try:
                 self.check()
             except Exception as e:
-                logger.error(f"an unexpected error occurred. error={e}")
-
-    def send_pr_post(self, post, profile):
-        self.notificator.notify(
-            payload={
-                "username": "ig-pr-times",
-                "attachments": [
-                    {
-                        "author_name": f"{post.owner_username}",
-                        "author_link": f"https://www.instagram.com/{post.owner_username}",
-                        "author_icon": profile.profile_pic_url,
-                        "text": f"{post.caption}",
-                        "image_url": f"{post.url}",
-                    }
-                ],
-            }
-        )
+                msg = f"an unexpected error occurred. error={e}"
+                self.notificator.notify_error(msg)
+                logger.error(msg)
