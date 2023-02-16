@@ -1,12 +1,14 @@
+import logging
 import time
 
 import instaloader
 
 from controller.notificator import Notificator
 
-INTERVAL_SEC = 60 * 60
-
+INTERVAL_SEC = 60 * 60 * 4
 KEYWORDS = ["PR", "pr"]
+
+logger = logging.getLogger(__name__)
 
 
 class Target(object):
@@ -23,13 +25,28 @@ class Watcher(object):
         self.targets = [Target(user_id) for user_id in targets]
 
     def check(self):
-        loader = instaloader.Instaloader()
-        loader.login(self.user_id, self.password)
+        try:
+            loader = instaloader.Instaloader()
+            loader.login(self.user_id, self.password)
+        except Exception as e:
+            logger.error(f"login failed. error={e}")
+            return
 
         for target in self.targets:
-            posts = instaloader.Profile.from_username(loader.context, target.user_id).get_posts()
-            profile = instaloader.Profile.from_username(loader.context, target.user_id)
             counter = 0
+
+            try:
+                profile = instaloader.Profile.from_username(loader.context, target.user_id)
+            except Exception as e:
+                logger.error(f"{target.user_id} not found. error={e}")
+                continue
+
+            try:
+                posts = profile.get_posts()
+            except Exception as e:
+                logger.error(f"{target.user_id}'s post not found. error={e}")
+                continue
+
             for post in posts:
                 counter += 1
                 if post.date.timestamp() > target.last_check_timestamp:
@@ -46,12 +63,11 @@ class Watcher(object):
 
     def run(self):
         while True:
+            time.sleep(INTERVAL_SEC)
             try:
                 self.check()
             except Exception as e:
-                print(e)
-
-            time.sleep(INTERVAL_SEC)
+                logger.error(f"an unexpected error occurred. error={e}")
 
     def send_pr_post(self, post, profile):
         self.notificator.notify(
