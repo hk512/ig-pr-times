@@ -6,5 +6,6 @@
     "target user id",
     "target user id",
     "target user id"
-  ]
+  ],
+    "interval_sec": 14400
 }

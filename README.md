@@ -43,7 +43,8 @@ example
     "target user id",
     "target user id",
     "target user id"
-  ]
+  ],
+  "interval_sec": 14400
 }
 ```
 
@@ -52,6 +53,7 @@ example
 - password: Instagramのパスワード
 - webhook_url: SlackのWebhook URL
 - targets: 監視するユーザーのID(複数指定可)
+- interval_sec: 投稿のチェック実行間隔(秒)
 
 #### 7. 実行
 ``` bash

@@ -5,7 +5,6 @@ import instaloader
 
 from controller.notificator import Notificator
 
-INTERVAL_SEC = 60 * 60 * 4
 KEYWORDS = ["PR", "pr"]
 
 logger = logging.getLogger(__name__)
@@ -18,11 +17,12 @@ class Target(object):
 
 
 class Watcher(object):
-    def __init__(self, user_id, password, webhook_url, targets):
+    def __init__(self, user_id, password, webhook_url, targets, interval_sec):
         self.user_id = user_id
         self.password = password
         self.notificator = Notificator(webhook_url)
         self.targets = [Target(user_id) for user_id in targets]
+        self.interval_sec = interval_sec
 
     def check(self):
         try:
@@ -63,7 +63,7 @@ class Watcher(object):
 
     def run(self):
         while True:
-            time.sleep(INTERVAL_SEC)
+            time.sleep(self.interval_sec)
             try:
                 self.check()
             except Exception as e:

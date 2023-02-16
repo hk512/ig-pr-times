@@ -10,3 +10,4 @@ class Configure(object):
         self.password = data["password"]
         self.webhook_url = data["webhook_url"]
         self.targets = data["targets"]
+        self.interval_sec = data["interval_sec"]
