@@ -5,7 +5,7 @@ import instaloader
 
 from controller.notificator import Notificator
 
-KEYWORDS = ["PR", "pr"]
+KEYWORDS = ["PR", "pr", "招待"]
 
 logger = logging.getLogger(__name__)
 
